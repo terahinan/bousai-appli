@@ -783,7 +783,7 @@ const tasks = [
       title: "自分で生活を守る",
       detail: "電気・水道などのライフラインをはじめ食料の流通が途絶えるため、3日間程度は自宅にある飲料水・食料などでしのぐ。隣近所で食料を持ち寄って炊き出しをする。",
       note: "最低3日間の備蓄が必要。"
-  }、
+  },
 {
     id: "chair-008",
     role: "町会長",
@@ -811,7 +811,7 @@ const resetChecksButton = document.getElementById("resetChecksButton");
 const STORAGE_PREFIX = "bousai-earthquake-v2";
 
 function pad(n) {
-    return String(n).padStart(2”0");
+    return String(n).padStart(2,"0");
 }
 
 function toDatetimeLocalValue(date) {
