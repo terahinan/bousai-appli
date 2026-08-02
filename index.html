@@ -10,40 +10,61 @@
 </head>
 <body>
   <header class="app-header">
-    <div>
-      <p class="eyebrow">個人用サンプル v3</p>
+    <div class="header-title-row">
       <h1>地震時 行動ナビ</h1>
-      <p class="subtitle">発生時刻を入れると、今までにやるべきことを表示します。</p>
+      <a id="githubUpdateLink" class="update-link" href="https://life-support-lab.github.io/bousai-app/" role="button">最新版に更新</a>
     </div>
-    <button id="resetChecksButton" class="ghost-button" type="button">チェックをリセット</button>
   </header>
 
   <main>
     <section class="card important-card">
-      <h2>1. 地震発生時刻を入力</h2>
-      <label for="quakeTimeInput">地震が発生した日時</label>
-      <input id="quakeTimeInput" type="datetime-local" />
+      <h2>1. 地震はどのくらい前に発生しましたか</h2>
+      <p class="guide-text">非常時は、まず近いものを選んでください。あとで正確な日時に修正できます。</p>
       <div class="quick-buttons" aria-label="発生時刻の簡単入力">
         <button type="button" class="small-button" data-minutes-ago="0">今発生</button>
+        <button type="button" class="small-button" data-minutes-ago="5">5分前</button>
         <button type="button" class="small-button" data-minutes-ago="10">10分前</button>
         <button type="button" class="small-button" data-minutes-ago="30">30分前</button>
         <button type="button" class="small-button" data-minutes-ago="60">1時間前</button>
+        <button type="button" class="small-button" data-minutes-ago="120">2時間前</button>
         <button type="button" class="small-button" data-minutes-ago="180">3時間前</button>
+        <button type="button" class="small-button" data-minutes-ago="360">6時間前</button>
+        <button type="button" class="small-button" data-minutes-ago="720">12時間前</button>
+        <button type="button" class="small-button" data-minutes-ago="4320">3日前</button>
+        <button type="button" class="small-button" data-minutes-ago="10080">7日前</button>
       </div>
-      <p id="elapsedText" class="elapsed-text">発生時刻を入力してください。</p>
+
+      <div class="datetime-panel">
+        <div class="datetime-panel-head">
+          <span class="field-label-small">発生日時</span>
+          <span id="selectedAgoText" class="selected-ago-text tentative">暫定日時</span>
+        </div>
+        <p id="elapsedText" class="elapsed-text">発生時刻を選択してください。</p>
+        <label for="quakeTimeInput" class="datetime-edit-label">余裕ができたら正確な日時に修正</label>
+        <div class="datetime-split" aria-label="地震が発生した日時">
+          <div class="datetime-part">
+            <span class="field-label-small">日付</span>
+            <input id="quakeDateInput" type="date" />
+          </div>
+          <div class="datetime-part">
+            <span class="field-label-small">時刻</span>
+            <input id="quakeClockInput" type="time" />
+          </div>
+        </div>
+        <input id="quakeTimeInput" type="hidden" />
+      </div>
     </section>
 
     <section class="card">
       <h2>2. 立場を選ぶ</h2>
       <label for="roleSelect">自分の立場</label>
       <select id="roleSelect"></select>
-      <p class="hint">最初は「町民」「自主防災組織」「町会長」だけ作り込むのがおすすめです。</p>
     </section>
 
     <section class="card action-card">
       <div class="section-title-row">
         <div>
-          <h2>3. 今までにやるべきこと</h2>
+          <h2>3. やること一覧</h2>
           <p id="summaryText" class="guide-text">発生時刻と立場を選ぶと表示されます。</p>
         </div>
         <span id="taskCount" class="badge">0件</span>
@@ -55,7 +76,7 @@
       <div class="section-title-row">
         <div>
           <h2>4. 時系列の見える化</h2>
-          <p class="guide-text">オレンジの線が現在位置です。メーター部分の左端を0分として表示します。横に動かして見られます。</p>
+          <p id="timelineGuide" class="guide-text">選んだ経過時間に応じて横軸を圧縮して表示します。</p>
         </div>
       </div>
       <div class="timeline-wrapper" id="timelineWrapper">
@@ -65,16 +86,8 @@
       </div>
     </section>
 
-    <section class="card upcoming-card">
-      <h2>5. この後に出てくる作業</h2>
-      <p class="guide-text">先の予定を見たいとき用です。現場では「3. 今までにやるべきこと」を優先してください。</p>
-      <div id="upcomingList" class="upcoming-list"></div>
-    </section>
-
-    <section class="card note">
-      <h2>注意</h2>
-      <p>これは試作用のサンプルです。実際に使う場合は、町会・自治体の防災計画、避難所運営マニュアル、地域事情に合わせて内容を必ず確認してください。</p>
-      <p>チェック状態は、この端末のブラウザ内に保存されます。通信は行いません。</p>
+    <section class="card reset-card">
+      <button id="resetChecksButton" class="reset-button" type="button">チェックをリセット</button>
     </section>
   </main>
 

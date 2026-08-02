@@ -1,7 +1,8 @@
 :root {
   --timeline-label-width: 150px;
   --timeline-gap: 10px;
-  --timeline-min-width: 780px;
+  --timeline-row-padding: 10px;
+  --timeline-min-width: 840px;
   --bg: #f4f7f6;
   --card: #ffffff;
   --text: #14213d;
@@ -31,12 +32,41 @@ body {
   z-index: 20;
   display: flex;
   gap: 12px;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 18px 18px 14px;
   background: linear-gradient(135deg, #0f766e, #134e4a);
   color: #fff;
   box-shadow: var(--shadow);
+}
+
+
+.header-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.update-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.update-link:active {
+  transform: translateY(1px);
 }
 
 .app-header h1 {
@@ -74,6 +104,7 @@ main {
 
 .important-card {
   border: 2px solid rgba(15, 118, 110, 0.35);
+  overflow: hidden;
 }
 
 .card h2 {
@@ -88,13 +119,54 @@ label {
 }
 
 select,
-input[type="datetime-local"] {
+input[type="datetime-local"],
+input[type="date"],
+input[type="time"] {
+  display: block;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding: 14px 12px;
   border: 1px solid #b7c7c3;
   border-radius: 12px;
   font-size: 18px;
   background: #fff;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="datetime-local"],
+input[type="date"],
+input[type="time"] {
+  min-height: 54px;
+}
+
+input[type="datetime-local"]::-webkit-date-and-time-value,
+input[type="date"]::-webkit-date-and-time-value,
+input[type="time"]::-webkit-date-and-time-value {
+  text-align: left;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.datetime-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+  gap: 10px;
+  max-width: 100%;
+}
+
+.datetime-part {
+  min-width: 0;
+}
+
+.field-label-small {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
 }
 
 button,
@@ -121,6 +193,13 @@ input {
   font-weight: 700;
 }
 
+.small-button.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
 .quick-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -129,7 +208,7 @@ input {
 }
 
 .elapsed-text {
-  margin: 12px 0 0;
+  margin: 8px 0 12px;
   padding: 12px;
   background: #ecfdf3;
   border-radius: 12px;
@@ -259,10 +338,10 @@ input {
   目盛りと現在時刻の線は、作業名列ではなく、右側のメーター部分の先頭から始めます。
 */
 .timeline-scale {
-  height: 28px;
-  margin-left: calc(var(--timeline-label-width) + var(--timeline-gap) + 10px);
-  min-width: calc(var(--timeline-min-width) - var(--timeline-label-width) - var(--timeline-gap) - 10px);
-  width: calc(100% - var(--timeline-label-width) - var(--timeline-gap) - 10px);
+  height: 36px;
+  margin-left: calc(var(--timeline-label-width) + var(--timeline-gap) + var(--timeline-row-padding));
+  min-width: calc(var(--timeline-min-width) - var(--timeline-label-width) - var(--timeline-gap) - var(--timeline-row-padding) - var(--timeline-row-padding));
+  width: calc(100% - var(--timeline-label-width) - var(--timeline-gap) - var(--timeline-row-padding) - var(--timeline-row-padding));
   border-bottom: 1px solid var(--line);
 }
 
@@ -271,7 +350,19 @@ input {
   top: 0;
   transform: translateX(-50%);
   font-size: 12px;
+  line-height: 1.2;
   color: var(--muted);
+  white-space: nowrap;
+}
+
+.scale-mark-start {
+  transform: translateX(0);
+  text-align: left;
+}
+
+.scale-mark-end {
+  transform: translateX(-100%);
+  text-align: right;
 }
 
 .scale-mark::before {
@@ -313,13 +404,23 @@ input {
   gap: var(--timeline-gap);
   align-items: center;
   min-height: 48px;
-  padding: 8px 10px;
+  min-width: var(--timeline-min-width);
+  padding: 8px var(--timeline-row-padding);
   border-bottom: 1px solid #edf2f0;
 }
 
 .timeline-label {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  padding-right: 8px;
   font-weight: 800;
   font-size: 13px;
+  background: #fbfdfc;
+  box-shadow: 10px 0 12px rgba(251, 253, 252, 0.95);
 }
 
 .timeline-track {
@@ -342,6 +443,70 @@ input {
 .timeline-bar.now { background: var(--accent); }
 .timeline-bar.overdue { background: var(--danger); }
 
+
+.timeline-bar.continues {
+  opacity: 0.88;
+}
+
+.timeline-label .continuation-mark {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.long-term-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.long-term-item {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #fed7aa;
+  background: #fff7ed;
+}
+
+.long-term-item.completed {
+  opacity: 0.65;
+}
+
+.long-term-head {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.long-term-title {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.long-term-meta {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+  font-weight: 700;
+}
+
+.long-term-detail,
+.long-term-note {
+  margin: 8px 0 0;
+}
+
+.long-term-note {
+  padding: 8px;
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  border-radius: 8px;
+}
+
 .upcoming-list {
   display: grid;
   gap: 8px;
@@ -355,8 +520,24 @@ input {
   background: #fbfdfc;
 }
 
-.note {
-  background: #fffbeb;
+
+.reset-card {
+  text-align: center;
+}
+
+.reset-button {
+  width: 100%;
+  border: 1px solid #fca5a5;
+  background: #fff;
+  color: #b42318;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.reset-button:active {
+  transform: translateY(1px);
 }
 
 .empty {
@@ -367,6 +548,10 @@ input {
 }
 
 @media (max-width: 640px) {
+  :root {
+    --timeline-label-width: 120px;
+    --timeline-min-width: 860px;
+  }
   .app-header {
     align-items: flex-start;
     flex-direction: column;
@@ -375,5 +560,80 @@ input {
   main { padding: 12px; }
   .card { padding: 15px; border-radius: 16px; }
   .section-title-row { flex-direction: column; }
-  :root { --timeline-label-width: 120px; }
+  select,
+  input[type="datetime-local"],
+  input[type="date"],
+  input[type="time"] {
+    font-size: 16px;
+    padding: 12px 10px;
+  }
+  .datetime-split {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .quick-buttons .small-button {
+    flex: 1 1 calc(50% - 8px);
+    text-align: center;
+  }
+}
+
+
+
+.datetime-panel {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid #cfe3df;
+  border-radius: 14px;
+  background: #f8fdfc;
+}
+
+.datetime-panel-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.selected-ago-text {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.selected-ago-text.tentative {
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+.selected-ago-text.fixed {
+  background: #eef6f5;
+  color: var(--primary-dark);
+}
+
+.datetime-edit-label {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.pill.overdue::before {
+  content: "";
+}
+
+@media (max-width: 640px) {
+  .datetime-panel-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .quick-buttons .small-button {
+    min-height: 44px;
+  }
+  .timeline-label {
+    font-size: 12px;
+    line-height: 1.3;
+  }
 }
