@@ -1247,7 +1247,7 @@ async function refreshFromGithub(event) {
     console.warn("更新準備中にエラーが発生しました", error);
   }
 
-  const baseUrl = "https://life-support-lab.github.io/bousai-app/";
+  const baseUrl = "https://terahinan.github.io/bousai-appli/";
   window.location.href = `${baseUrl}?updated=${Date.now()}`;
 }
 
