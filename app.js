@@ -1,6 +1,6 @@
 // ===============================
-// 防災行動ナビ v12
-// 「最新版に更新」リンク追加版
+// 防災行動ナビ v14
+// Q&A分類の開閉表示追加版
 // ===============================
 
 const roles = [
@@ -788,6 +788,471 @@ const tasks = [
   }
 ];
 
+// ===============================
+// 対応Q&A（暫定回答）
+// roles に指定した立場を選んだときだけ表示します。
+// 設置場所・数量などが確定したら answer を更新してください。
+// ===============================
+const qandaItems = [
+  {
+    id: "toilet-001",
+    category: "トイレ関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "トイレはどこにあるのか",
+    answer: "避難所内の利用可能なトイレは、屋内運動場（多目的、男性用、女性用）、自治会館（男性用、女性用）、サロン室（多目的）にある。"
+  },
+  {
+    id: "toilet-002",
+    category: "トイレ関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "停電しているけどトイレは使えるのか",
+    answer: "自家発電設備が稼働している間（72時間）は水洗トイレとして使用できる。自家発電設備が止まると水が出ないので防災井戸からバケツで水を運んで流す。"
+  },
+  {
+    id: "toilet-003",
+    category: "トイレ関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "トイレの水が出ない",
+    answer: "停電し自家発電設備が止まると水洗で流せなくなる。防災井戸からバケツで水を運んで流す。なお、防災井戸が使用できなくなった場合は簡易トイレが1500個備蓄されている。"
+  },
+  {
+    id: "toilet-004",
+    category: "トイレ関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "トイレに流す水はどこにあるのか",
+    answer: "防災井戸からバケツで水を運んで流す。"
+  },
+  {
+    id: "toilet-005",
+    category: "トイレ関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "トイレの使用方法が分からない",
+    answer: "トイレ内又は避難所内に使用方法を掲示する。掲示が未設置の場合は衛生班が説明する。"
+  },
+  {
+    id: "toilet-006",
+    category: "トイレ関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "マンホールトイレはどこにあるのか",
+    answer: "自治会館外構部分の東中筋通り側に設置。"
+  },
+  {
+    id: "toilet-007",
+    category: "トイレ関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "簡易トイレは備蓄されているのか",
+    answer: "簡易トイレは1500個備蓄している。"
+  },
+  {
+    id: "toilet-008",
+    category: "トイレ関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "区災害対策本部から仮設トイレを配置すると連絡があった",
+    answer: "設置場所は植松公園を予定。到着予定時刻等を確認する。"
+  },
+
+  {
+    id: "evacuatespace-001",
+    category: "避難スペース関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班"],
+    question: "5人用テントには5人入れるのか",
+    answer: "プライバシー確保のための遮蔽用テントは世帯ごとに入るのが原則。5人未満の利用も可。"
+  },
+  {
+    id: "evacuatespace-002",
+    category: "避難スペース関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班"],
+    question: "2人用テントに2人は狭い",
+    answer: "2人世帯の方は2人で入ることを依頼。狭く感じる場合は1人でも可。"
+  },
+  {
+    id: "evacuatespace-003",
+    category: "避難スペース関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班"],
+    question: "段ボールベッドはないのか",
+    answer: "段ボールベッドは8セット備蓄している。数量が少ないので床で直接寝るのが辛い人を優先する。救護所には２セット配置している。"
+  },
+  {
+    id: "evacuatespace-004",
+    category: "避難スペース関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班"],
+    question: "プライバシー確保のための遮蔽用テントは何張あるのか",
+    answer: "４人から５人用４０張、１人～２人用３０張、屋外用７張備蓄している。"
+  },
+  {
+    id: "evacuatespace-005",
+    category: "避難スペース関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班"],
+    question: "遮蔽用テントの配置は決まっているのか",
+    answer: "特に定めていないが通路や一定の空間の確保が必要と考えられる。"
+  },
+  {
+    id: "evacuatespace-006",
+    category: "避難スペース関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班"],
+    question: "避難者が増えてきたときスペースはあるのか",
+    answer: "屋内運動場と自治会館とで避難スペースの収容人員は２２５人。倉庫や駐輪場、隣接するホテルでの収容を検討する。"
+  },
+  {
+    id: "pet-001",
+    category: "ペット関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "犬はどこに連れていけばいいのか",
+    answer: "犬は植松公園に設置するペット避難用のテントに収容する。ケージやキャリーバッグに入れる。"
+  },
+  {
+    id: "pet-002",
+    category: "ペット関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班", "避難所運営委員会衛生班"],
+    question: "猫はどこに連れていけばいいのか",
+    answer: "猫も植松公園に設置するペット避難用のテントに収容するが、犬と同じテントで大丈夫かどうか検討が必要。ケージやキャリーバッグに入れる。"
+  },
+  {
+    id: "pet-003",
+    category: "ペット関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "犬猫以外のペットはどうすればいいのか",
+    answer: "状況に応じ対応を検討する必要がある。"
+  },
+  {
+    id: "pet-004",
+    category: "ペット関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "車でペットと一緒に避難したい",
+    answer: "植松公園で車避難を認めるかどうかは要検討。屋外用テントがあるので植松公園に設置しペットと一緒にいることは可能。"
+  },
+  {
+    id: "visitor-001",
+    category: "地区住民以外の方への対応",
+    roles: ["避難所運営委員会総務班"],
+    question: "旅行者が避難所に入れないか聞いている",
+    answer: "旅行者は原則として避難所に入れず緊急避難広場へ誘導する。（西本願寺、東本願寺、京都水族館、鉄道博物館）"
+  },
+  {
+    id: "visitor-002",
+    category: "地区住民以外の方への対応",
+    roles: ["避難所運営委員会総務班"],
+    question: "住居のない方が食料はないかと聞いてきた",
+    answer: "緊急性や健康状態を確認し、食料の在庫を見ながら対応を検討する。"
+  },
+
+  {
+    id: "food-001",
+    category: "食料・物資の配布関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会食料物資班","避難所運営委員会施設管理班"],
+    question: "食事の準備はできるのか",
+    answer: "備蓄量、避難者数を確認し、量が足りる場合はカセットコンロで炊き出しを行う。地震後３日間は食料の配布が期待できないので避難者の備蓄食料を持ち寄り対応する。"
+  },
+  {
+    id: "food-002",
+    category: "食料・物資の配布関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会食料物資班","避難所運営委員会施設管理班"],
+    question: "行政からの食料・物資の配布はどうなっているのか",
+    answer: "区災害対策本部からの食料・物資の配布は早くても３日後と想定。避難者の備蓄食料・物資を持ち寄り対応する。"
+  },
+  {
+    id: "food-003",
+    category: "食料・物資の配布関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会食料物資班","避難所運営委員会施設管理班"],
+    question: "避難所の食料・物資の備蓄量は",
+    answer: "水（２４缶）１３箱、食料（アルファ―米）５０食２箱・小分け３０食８箱、羊羹（２０個）６箱である。"
+  },
+  {
+    id: "food-004",
+    category: "食料・物資の配布関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会食料物資班","避難所運営委員会施設管理班"],
+    question: "区災害対策本部から食料の配布がある旨連絡",
+    answer: "受け取り一旦防災倉庫に保管する。"
+  },
+  {
+    id: "food-005",
+    category: "食料・物資の配布関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会食料物資班","避難所運営委員会施設管理班"],
+    question: "食物アレルギーの子供がいる",
+    answer: "事務局で情報を共有し、自己責任で対応してもらう。"
+  },
+  {
+    id: "food-006",
+    category: "食料・物資の配布関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会食料物資班","避難所運営委員会施設管理班"],
+    question: "区災害対策本部から給水タンク車が２台行くが駐車場はあるか",
+    answer: "路上か植松公園に設置してもらう。"
+  },
+  {
+    id: "food-007",
+    category: "食料・物資の配布関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会食料物資班","避難所運営委員会施設管理班"],
+    question: "自宅避難者から近所の分も含め２５食分けて欲しい",
+    answer: "自宅避難者も避難所の管理下であるので原則として配布する。"
+  },
+  {
+    id: "food-008",
+    category: "食料・物資の配布関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会食料物資班","避難所運営委員会施設管理班"],
+    question: "宗教上の理由から食べられないものがある",
+    answer: "事務局で情報を共有し、自己責任で対応してもらう。"
+  },
+  {
+    id: "food-009",
+    category: "食料・物資の配布関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会食料物資班","避難所運営委員会施設管理班"],
+    question: "近所のスーパーからお惣菜９０食を提供したい",
+    answer: "受け取り、配布に関しては対象者や人数を考慮する。"
+  },
+
+  {
+    id: "volunteer-001",
+    category: "ボランティア関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会ボランティア班"],
+    question: "ボランティアが活動したいと来ている",
+    answer: "ニーズ等を整理して受け入れを検討するが、あまり早い段階では通常受け入れ態勢は整っていない。"
+  },
+  {
+    id: "volunteer-002",
+    category: "ボランティア関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会ボランティア班"],
+    question: "ボランティアセンターからニーズ調査したい",
+    answer: "あまり早い段階では通常ニーズは整理されていないので、ニーズが整理された段階で返答する。"
+  },
+
+  {
+    id: "life-001",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "酒は飲んでいいのか聞いている",
+    answer: "飲酒する場所を決めて、事故や避難者間のトラブルを防ぐため、一定のルールを定める。"
+  },
+  {
+    id: "life-002",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "たばこはどこで吸えばいいのか聞いている",
+    answer: "喫煙する場所を決めて、避難者間のトラブルを防ぐため、一定のルールを定める。"
+  },
+  {
+    id: "life-003",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "着替えはどこですればいいのか",
+    answer: "遮蔽用テントにいる避難者はテント内で、その他の者は男女別に着替え用テントを設置する予定なのでその中で着替える。"
+  },
+  {
+    id: "life-004",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "少し寒いが暖房はないのか",
+    answer: "停電していなければエアコンを入れる。停電時には自家発電設備が７２時間稼働するがエアコン用の電力は準備されていないので電気ストーブ（１５００kw）を屋内運動場４台、自治会館１台設置する。"
+  },
+  {
+    id: "life-005",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "少し暑いが冷房はないのか",
+    answer: "停電していなければエアコンを入れる。停電時には自家発電設備が７２時間稼働するがエアコン用の電力は準備されていないので扇風機等でしのぐ。なお扇風機は備蓄されていない。"
+  },
+  {
+    id: "life-006",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "各種の情報を掲示板に張り出してほしい",
+    answer: "避難者が必要と考えられる情報は遅れることなく掲示する。"
+  },
+  {
+    id: "life-007",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "暗いので照明はないのか",
+    answer: "停電時には自家発電設備が７２時間稼働し照明を通常時の１/３確保できる。自家発電設備が停止した時は、ランタン（乾電池式　単１乾電池は２００個備蓄）が１２個備蓄されている。また、各自懐中電灯の活用を依頼する。"
+  },
+  {
+    id: "life-008",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "洗濯をしたいがどこですればいいのか",
+    answer: "自治会館外構部の防災井戸付近で行う。なお、今後洗濯用の移動式シンクを男女別に配置する予定である。"
+  },
+  {
+    id: "life-009",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "洗濯ものの干場はあるのか",
+    answer: "現状においては、遮蔽テントにいる避難者はテント内に、その他の者は男女別に駐輪場にテントを準備する予定。"
+  },
+  {
+    id: "life-010",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "スマホは何処で充電できるのか",
+    answer: "備蓄されている太陽パネル付き蓄電池設備を自治会館外構に設置しておくので、そこで充電する。なお、自家発電設備が稼働している間は各室のコンセントで充電できる。"
+  },
+  {
+    id: "life-011",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "盲導犬を連れているがどうすればいいのか",
+    answer: "盲導犬は人と行動を一緒にするのが原則なので避難所に収容する。なお、場所は周辺に配慮して決める。"
+  },
+  {
+    id: "life-012",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "仮設の風呂１基が到着する。何処に設置するか",
+    answer: "設置場所は植松公園を予定。到着予定時刻等を確認する。"
+  },
+  {
+    id: "life-013",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "遠くにいる家族に安否を知らせたい",
+    answer: "屋内運動場入口壁際に特設公衆電話が設置されている。なお、発信専用である。"
+  },
+  {
+    id: "life-014",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "談話室はないのか",
+    answer: "自治会館内に一定のエリアを確保する予定である。"
+  },
+  {
+    id: "life-015",
+    category: "生活環境関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会情報広報班","避難所運営委員会施設管理班","避難所運営委員会衛生班"],
+    question: "ゴミは何処に集めればいいのか",
+    answer: "一時的には自治会館外構部とし最終的には植松公園を予定している。"
+  },
+
+　{
+    id: "facility-001",
+    category: "施設の安全確認関係",
+    roles: ["避難所運営委員会総務班","施設管理者","避難所運営委員会施設管理班"],
+　　question: "施設の安全が確認できた",
+　　answer: "地震後最初に避難所に入るには安全確認が必要である。"
+  },
+　{
+    id: "facility-002",
+    category: "施設の安全確認関係",
+    roles: ["避難所運営委員会総務班","施設管理者","避難所運営委員会施設管理班"],
+    question: "水漏れがしている",
+    answer: "避難所の耐震性は確保できているが、状況によっては配管等の破損から水漏れが生じることもある。施設管理者に対応を依頼する。"
+　},
+　{
+    id: "facility-003",
+    category: "施設の安全確認関係",
+    roles: ["避難所運営委員会総務班","施設管理者","避難所運営委員会施設管理班"],
+    question: "窓ガラスが割れている",
+    answer: "避難所の耐震性は確保できているが、状況によっては窓ガラスの破損が生じることもある。施設管理者に対応を依頼する。"
+　},
+
+  {
+    id: "health-001",
+    category: "避難者の健康関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会被災者管理班","避難所運営委員会救護班"],
+    question: "熱が高そうな人がいる",
+    answer: "状況によるが、救護室に運び看護師を探して対応を依頼する。"
+  },
+  {
+    id: "health-002",
+    category: "避難者の健康関係",
+    roles: ["避難所運営委員会総務班","避難所運営委員会被災者管理班","避難所運営委員会救護班"],
+    question: "救護室は何処にあるのか",
+    answer: "１Fサロン室を救護室に充てている。"
+  },
+
+  {
+    id: "otherorg-001",
+    category: "関係機関関係",
+    roles: ["避難所運営委員会総務班", "避難所運営委員会被災者管理班", "避難所運営委員会情報広報班"],
+    question: "区災害対策本部から避難者の人数の問い合わせがある",
+    answer: "避難者の人数は避難所に入るときに把握しておき、その後落ち着いたところで避難所入退所届け出に記入してもらう。"
+  },
+  {
+    id: "otherorg-002",
+    category: "関係機関関係",
+    roles: ["避難所運営委員会総務班", "避難所運営委員会被災者管理班", "避難所運営委員会情報広報班"],
+    question: "新聞社から避難所運営本部は何処にあるか聞いている",
+    answer: "問い合わせの趣旨を確認し必要に応じ対応する。"
+  },
+  {
+    id: "otherorg-003",
+    category: "関係機関関係",
+    roles: ["避難所運営委員会総務班", "避難所運営委員会被災者管理班", "避難所運営委員会情報広報班"],
+    question: "テレビ局は報道用の駐車場があるか聞いている",
+    answer: "問い合わせの趣旨を確認し必要に応じ対応する。なお、一般車両用の駐車場はない。"
+  },
+  {
+    id: "otherorg-004",
+    category: "関係機関関係",
+    roles: ["避難所運営委員会総務班", "避難所運営委員会被災者管理班", "避難所運営委員会情報広報班"],
+    question: "区災害対策本部から福祉避難所を開設するので人選してほしい",
+    answer: "避難者と調整し定める。なお、対象者は要介護４又は５の方である。"
+  },
+  {
+    id: "otherorg-005",
+    category: "関係機関関係",
+    roles: ["避難所運営委員会総務班", "避難所運営委員会被災者管理班", "避難所運営委員会情報広報班"],
+    question: "区災害対策本部から近日中に視察者が多数来る見込み",
+    answer: "対応について検討するが、時期や対応者の人数等の問題もあるので区災害対策本部とよく調整する。"
+  },
+
+  {
+    id: "knowledge-001",
+    category: "地震知識関係",
+    roles: ["住民","町会長"],
+    question: "避難所はどこにあるのか",
+    answer: "植柳学区の避難所は植柳コミュニティーセンターである。"
+  },
+  {
+    id: "knowledge-002",
+    category: "地震知識関係",
+    roles: ["住民","町会長"],
+    question: "集合場所とは",
+    answer: "地震直後に町内の住民の安否確認や火災、生き埋め等が無いか確認するために集合する場所。"
+  },
+  {
+    id: "knowledge-003",
+    category: "地震知識関係",
+    roles: ["住民","町会長"],
+    question: "待機場所は何処にあるのか",
+    answer: "待機場所は植松公園である。集合場所に集合した後、消火や救命、救助を実施する者を除き避難所に入るために一時的に参集する場所をいう。"
+  },
+  {
+    id: "knowledge-004",
+    category: "地震知識関係",
+    roles: ["住民","町会長"],
+    question: "避難時に持っていくものは",
+    answer: "貴重品、非常食品、応急医薬品、生活用品、感染症対策、その他ラジオ・充電器・懐中電灯・電池など。季節によって変わるので注意。"
+  },
+  {
+   id: "knowledge-005",
+   category: "地震知識関係",
+   roles: ["住民","町会長"],
+   question: "食料の備蓄は何日分",
+   answer: "最低限３日分できれば７日分。"
+  },
+  {
+   id: "knowledge-006",
+   category: "地震知識関係",
+   roles: ["住民","町会長"],
+   question: "家具の転倒防止",
+   answer: "家具の転倒防止を行うこと。建物の耐震強化も重要である。。"
+  }
+
+];
+
+const QANDA_CATEGORY_ORDER = [
+  "トイレ関係",
+  "避難スペース関係",
+  "ペット関係",
+  "地区住民以外の方への対応",
+  "食料・物資の配布関係",
+  "ボランティア関係",
+  "生活環境関係",
+  "施設の安全確認関係",
+  "避難者の健康関係",
+  "関係機関関係",
+  "地震知識関係"
+];
+
 
 const roleSelect = document.getElementById("roleSelect");
 const quakeTimeInput = document.getElementById("quakeTimeInput");
@@ -803,6 +1268,9 @@ const timelineScale = document.getElementById("timelineScale");
 const timelineNow = document.getElementById("timelineNow");
 const timelineWrapper = document.getElementById("timelineWrapper");
 const timelineGuide = document.getElementById("timelineGuide");
+const qandaSummary = document.getElementById("qandaSummary");
+const qandaCount = document.getElementById("qandaCount");
+const qandaList = document.getElementById("qandaList");
 const resetChecksButton = document.getElementById("resetChecksButton");
 const githubUpdateLink = document.getElementById("githubUpdateLink");
 
@@ -1198,6 +1666,61 @@ function renderTimeline(elapsed) {
   setTimelineNowPosition(elapsed, scale);
 }
 
+
+function renderQanda() {
+  if (!qandaList || !qandaCount || !qandaSummary) return;
+
+  const role = roleSelect.value || "";
+  const roleItems = qandaItems.filter(item => item.roles.includes(role));
+  qandaCount.textContent = `${roleItems.length}件`;
+
+  if (!role) {
+    qandaSummary.textContent = "自分の立場を選ぶと、関係する質問が表示されます。";
+    qandaList.innerHTML = `<div class="empty">自分の立場を選択してください。</div>`;
+    return;
+  }
+
+  if (roleItems.length === 0) {
+    qandaSummary.textContent = `${role}向けのQ&Aは、まだ登録されていません。`;
+    qandaList.innerHTML = `<div class="empty">この立場に対応するQ&Aは、まだありません。</div>`;
+    return;
+  }
+
+  const categoryCount = new Set(roleItems.map(item => item.category)).size;
+  qandaSummary.textContent = `${role}に関係するQ&Aを${categoryCount}分類、${roleItems.length}件表示しています。分類を押すと質問一覧が開き、質問を押すと回答が開きます。`;
+
+  qandaList.innerHTML = QANDA_CATEGORY_ORDER.map(category => {
+    const categoryItems = roleItems.filter(item => item.category === category);
+    if (categoryItems.length === 0) return "";
+
+    const questions = categoryItems.map(item => `
+      <details class="qanda-item">
+        <summary class="qanda-question">
+          <span>${escapeHtml(item.question)}</span>
+          <span class="qanda-toggle" aria-hidden="true"></span>
+        </summary>
+        <div class="qanda-answer">
+          <span class="qanda-status">暫定回答</span>
+          <p>${escapeHtml(item.answer)}</p>
+        </div>
+      </details>
+    `).join("");
+
+    return `
+      <details class="qanda-category">
+        <summary class="qanda-category-title">
+          <span class="qanda-category-name">${escapeHtml(category)}</span>
+          <span class="qanda-category-meta">
+            <span class="qanda-category-count">${categoryItems.length}件</span>
+            <span class="qanda-category-toggle" aria-hidden="true"></span>
+          </span>
+        </summary>
+        <div class="qanda-category-items">${questions}</div>
+      </details>
+    `;
+  }).join("");
+}
+
 function renderAll() {
   syncHiddenFromDateTimeParts();
   localStorage.setItem(`${STORAGE_PREFIX}:role`, roleSelect.value);
@@ -1207,6 +1730,7 @@ function renderAll() {
   renderQuickButtonState();
   renderTasks(elapsed);
   renderTimeline(elapsed);
+  renderQanda();
 }
 
 function setMinutesAgo(minutes) {
@@ -1247,7 +1771,7 @@ async function refreshFromGithub(event) {
     console.warn("更新準備中にエラーが発生しました", error);
   }
 
-  const baseUrl = "https://terahinan.github.io/bousai-appli/";
+  const baseUrl = "https://terahinan.github.io/bousai-appli/ ";
   window.location.href = `${baseUrl}?updated=${Date.now()}`;
 }
 
