@@ -1670,6 +1670,18 @@ function renderTimeline(elapsed) {
 function renderQanda() {
   if (!qandaList || !qandaCount || !qandaSummary) return;
 
+  // Q&Aが再描画されても、開いている分類・質問を維持する。
+  const openCategories = new Set(
+    Array.from(qandaList.querySelectorAll(".qanda-category[open]"))
+      .map(element => element.dataset.category)
+      .filter(Boolean)
+  );
+  const openQuestions = new Set(
+    Array.from(qandaList.querySelectorAll(".qanda-item[open]"))
+      .map(element => element.dataset.qandaId)
+      .filter(Boolean)
+  );
+
   const role = roleSelect.value || "";
   const roleItems = qandaItems.filter(item => item.roles.includes(role));
   qandaCount.textContent = `${roleItems.length}件`;
@@ -1694,20 +1706,19 @@ function renderQanda() {
     if (categoryItems.length === 0) return "";
 
     const questions = categoryItems.map(item => `
-      <details class="qanda-item">
+      <details class="qanda-item" data-qanda-id="${escapeHtml(item.id)}" ${openQuestions.has(item.id) ? "open" : ""}>
         <summary class="qanda-question">
           <span>${escapeHtml(item.question)}</span>
           <span class="qanda-toggle" aria-hidden="true"></span>
         </summary>
         <div class="qanda-answer">
-          <span class="qanda-status">暫定回答</span>
           <p>${escapeHtml(item.answer)}</p>
         </div>
       </details>
     `).join("");
 
     return `
-      <details class="qanda-category">
+      <details class="qanda-category" data-category="${escapeHtml(category)}" ${openCategories.has(category) ? "open" : ""}>
         <summary class="qanda-category-title">
           <span class="qanda-category-name">${escapeHtml(category)}</span>
           <span class="qanda-category-meta">
@@ -1757,22 +1768,51 @@ async function refreshFromGithub(event) {
   const confirmed = confirm("GitHubから最新版を取得します。更新しますか？");
   if (!confirmed) return;
 
-  try {
-    if ("serviceWorker" in navigator) {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(registrations.map(registration => registration.unregister()));
-    }
-
-    if ("caches" in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.filter(key => key.startsWith("bousai-earthquake-")).map(key => caches.delete(key)));
-    }
-  } catch (error) {
-    console.warn("更新準備中にエラーが発生しました", error);
+  const originalText = githubUpdateLink ? githubUpdateLink.textContent : "最新版に更新";
+  if (githubUpdateLink) {
+    githubUpdateLink.textContent = "更新中…";
+    githubUpdateLink.setAttribute("aria-busy", "true");
   }
 
-  const baseUrl = "https://terahinan.github.io/bousai-appli/ ";
-  window.location.href = `${baseUrl}?updated=${Date.now()}`;
+  try {
+    const stamp = Date.now();
+
+    // まずGitHub Pagesへ接続できることを確認する。
+    const checkResponse = await fetch(`./index.html?update-check=${stamp}`, {
+      cache: "no-store"
+    });
+    if (!checkResponse.ok) {
+      throw new Error(`HTTP ${checkResponse.status}`);
+    }
+
+    // Service Worker自体の更新確認を行う。登録解除はしない。
+    if ("serviceWorker" in navigator) {
+      const registration = await navigator.serviceWorker.getRegistration();
+      if (registration) {
+        await registration.update();
+      }
+    }
+
+    // このアプリが作成した古いキャッシュだけを削除する。
+    if ("caches" in window) {
+      const keys = await caches.keys();
+      await Promise.all(
+        keys
+          .filter(key => key.startsWith("bousai-earthquake-"))
+          .map(key => caches.delete(key))
+      );
+    }
+
+    // 同一のGitHub Pages内でキャッシュ回避用パラメータを付けて再読込する。
+    window.location.replace(`./index.html?updated=${stamp}`);
+  } catch (error) {
+    console.error("最新版の取得に失敗しました", error);
+    alert("最新版の取得に失敗しました。通信状態を確認して、もう一度お試しください。");
+    if (githubUpdateLink) {
+      githubUpdateLink.textContent = originalText;
+      githubUpdateLink.removeAttribute("aria-busy");
+    }
+  }
 }
 
 initRoleSelect();
@@ -1782,7 +1822,11 @@ renderAll();
 roleSelect.addEventListener("change", renderAll);
 if (quakeDateInput) quakeDateInput.addEventListener("change", markManualDateTime);
 if (quakeClockInput) quakeClockInput.addEventListener("change", markManualDateTime);
-window.addEventListener("resize", renderAll);
+window.addEventListener("resize", () => {
+  const elapsed = getElapsedMinutes();
+  const scale = getTimelineScale(elapsed);
+  setTimelineNowPosition(elapsed, scale);
+});
 
 resetChecksButton.addEventListener("click", () => {
   if (confirm("この立場・発生時刻のチェック状態をリセットしますか？")) {

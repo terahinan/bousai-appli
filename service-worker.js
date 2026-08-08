@@ -1,4 +1,4 @@
-const CACHE_NAME = "bousai-earthquake-v15";
+const CACHE_NAME = "bousai-earthquake-v15-rebuild1";
 const FILES = [
   "./",
   "./index.html",
