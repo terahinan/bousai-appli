@@ -1,4 +1,4 @@
-const CACHE_NAME = "bousai-earthquake-v12";
+const CACHE_NAME = "bousai-earthquake-v15";
 const FILES = [
   "./",
   "./index.html",
@@ -9,7 +9,7 @@ const FILES = [
 ];
 
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES)));
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES.map(url => new Request(url, { cache: "reload" })))));
   self.skipWaiting();
 });
 
@@ -26,7 +26,7 @@ self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
 
   event.respondWith(
-    fetch(event.request)
+    fetch(event.request, { cache: "no-store" })
       .then(response => {
         const copy = response.clone();
         caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
